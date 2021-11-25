@@ -2,28 +2,20 @@
     import Card from "./Card.svelte";
     import MultiChoice from "./CardElements/MultiChoice.svelte";
     import FreeRes from "./CardElements/FreeRes.svelte";
-    import {getAllCards} from "./manage";
+    import {getAllCards, learn, shuffle} from "./manage";
+    import {setContext} from "svelte";
+    import {writable} from "svelte/store";
 
     export let options = [];
+    let answer;
+    let guess = writable(null);
+    setContext('guess', guess);
     // The amount of new vocabulary the user is exposed to at once
     const LEARN_FRAME = 10;
 
-    function shuffle(array, endAt=undefined) {
-        let m = endAt || array.length, t, i;
-        // While there remain elements to shuffle…
-        while (m) {
-            // Pick a remaining element…
-            i = Math.floor(Math.random() * m--);
-            // And swap it with the current element.
-            t = array[m];
-            array[m] = array[i];
-            array[i] = t;
-        }
-        return array;
-    }
     const cards = getAllCards().then(shuffle);  // TODO: maybe in the future don't load all data into memory (maybe just ids?)
     cards.then(console.log);
-    let pointer = 0;
+    let pointer = -1;
     async function incr_pointer() {
         // TODO: make more concise
         const tmpPointer = pointer + 1;
@@ -35,17 +27,29 @@
             console.log(myCards);
         } else
             pointer++;
+        $guess = null;
+        answer = myCards[pointer].definition.toString().toLowerCase();
+    }
+    incr_pointer();  // Initialize the first answer
+
+    $: if ($guess !== null) {
+        const isCorrect = $guess === answer;
+        if (isCorrect)
+            setTimeout(learnCard.bind(globalThis, true), 500);
+    }
+
+    async function learnCard(correct) {
+        learn((await cards)[pointer].id, correct);
+        incr_pointer();
     }
 </script>
 
 {#await cards then cards}
     <Card definition={cards[pointer].term}>
         {#if options.length > 0}
-            <MultiChoice {options} correct={cards[pointer].definition} />
+            <!--MultiChoice {options} correct={cards[pointer].definition} learn={learnCard} /-->
         {:else}
-            <FreeRes correct={cards[pointer].definition} />
+            <FreeRes {learnCard} {answer} />
         {/if}
     </Card>
 {/await}
-<button on:click={incr_pointer}>Increase</button>
-<!--Card options={['a', 'b', 'c']} correct="a" /-->

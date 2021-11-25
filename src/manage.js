@@ -1,3 +1,17 @@
+export function shuffle(array, endAt=undefined) {
+    let m = endAt || array.length, t, i;
+    // While there remain elements to shuffle…
+    while (m) {
+        // Pick a remaining element…
+        i = Math.floor(Math.random() * m--);
+        // And swap it with the current element.
+        t = array[m];
+        array[m] = array[i];
+        array[i] = t;
+    }
+    return array;
+}
+
 /** @return {Promise<CardSchema[]>} */
 export function getAllCards(deckId=-1) {
     return new Promise(res => {
@@ -19,7 +33,7 @@ export function countCards(deckId=-1) {
 /** @return {Promise<CardSchema>} */
 export function getCard(cardId) {
     return new Promise(res => {
-        db.then(db => db.transaction('cards').objectStore('cards').index('id').get(cardId).onsuccess = ev => {
+        db.then(db => db.transaction('cards').objectStore('cards').get(cardId).onsuccess = ev => {
             res(ev.target.result);
         });
     });
@@ -35,9 +49,12 @@ export function learn(cardId, learn) {
     return new Promise(res => {
         getCard(cardId).then(card => {
             if (card.lastCorrect === learn) {
-                if (learn === false) card.level = Math.max(card.level - 1, 0);
-                else if (learn === true) Math.min(card.level + 1, 2);
+                if (learn) card.level = Math.min(card.level + 1, 2);
+                else card.level = Math.max(card.level - 1, 0);
+                //card.lastCorrect = false;  // TODO: Ensure that the user has to do each level at least twice
             }
+            if (learn) card.correct += 1;
+            else card.incorrect += 1;
             card.lastCorrect = learn;
             card.lastStudied = new Date();
             db.then(db => db.transaction('cards', 'readwrite').objectStore('cards').put(card).onsuccess = ev => {
