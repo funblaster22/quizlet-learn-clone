@@ -39,10 +39,13 @@
         answer = cards[pointer].definition.toString().toLowerCase();
 
         // shuffle options
-        options = shuffle(cards
+        options = cards
             .slice(0, Math.min(LEARN_FRAME, cards.length))  // Get learn frame
-            .map(card => card.definition.toString().toLowerCase())
-            .slice(0, Math.min(4, cards.length)));  // Get first 4 without overflowing
+            .map(card => card.definition.toString().toLowerCase());
+        options.splice(pointer, 1)  // Remove the answer to prevent duplication
+        options = shuffle([answer, ...shuffle(options)
+            .slice(0, Math.min(3, cards.length - 1))  // Get first 4 without overflowing
+        ]);
     }
 
     $: if ($guess !== null) {

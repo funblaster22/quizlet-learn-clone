@@ -15,6 +15,11 @@
 </div>
 
 <style>
+    #card :global(img) {
+        max-height: 50vh;
+        max-width: 100%;
+    }
+
     #container {
         border: 1px solid black;
     }
