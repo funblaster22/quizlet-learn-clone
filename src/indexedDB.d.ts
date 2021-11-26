@@ -2,7 +2,7 @@
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
 interface IDBTransaction {
-    objectStore(name: 'cards'): PlaylistStore;
+    objectStore(name: 'cards'): CardStore;
 }
 
 interface CustomSchema {
@@ -17,11 +17,13 @@ interface CardSchema {
     correct: number;
     incorrect: number;
     lastStudied: Date;
-    lastCorrect: boolean;
-    level: number;  // 0=multiple choice, 1=free response, 2=know
+    // &gt;0 : correct streak, <0 : incorrect streak
+    streak: number;
+    // 0=multiple choice, 1=free response, 2=know
+    level: number;
 }
 
-type PlaylistStore = CustomStore<CardSchema>;
+type CardStore = CustomStore<CardSchema>;
 
 // @ts-ignore incorrect 'add' signature
 interface CustomStore<Schema extends CustomSchema> extends IDBObjectStore {

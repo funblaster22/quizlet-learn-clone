@@ -1,17 +1,3 @@
-export function shuffle(array, endAt=undefined) {
-    let m = endAt || array.length, t, i;
-    // While there remain elements to shuffle…
-    while (m) {
-        // Pick a remaining element…
-        i = Math.floor(Math.random() * m--);
-        // And swap it with the current element.
-        t = array[m];
-        array[m] = array[i];
-        array[i] = t;
-    }
-    return array;
-}
-
 /** @return {Promise<CardSchema[]>} */
 export function getAllCards(deckId=-1) {
     return new Promise(res => {
@@ -42,20 +28,20 @@ export function getCard(cardId) {
 /**
  *
  * @param cardId {number}
- * @param learn {boolean} whether or not the attempt was correct
- * @returns {Promise<CardSchema>}
+ * @param isCorrect {boolean} whether or not the attempt was correct
+ * @returns {Promise<CardSchema>} the cardId
  */
-export function learn(cardId, learn) {
+export function learn(cardId, isCorrect) {
     return new Promise(res => {
         getCard(cardId).then(card => {
-            if (card.lastCorrect === learn) {
-                if (learn) card.level = Math.min(card.level + 1, 2);
+            // TODO: this conditional logic is kinda confusing
+            if (isCorrect) { card.correct++; card.streak = card.streak > 0 ? card.streak + 1 : 1; }
+            else { card.incorrect++; card.streak = card.streak < 0 ? card.streak - 1 : -1; }
+            if (Math.abs(card.streak) === 2) {
+                if (card.streak > 0) card.level = Math.min(card.level + 1, 2);
                 else card.level = Math.max(card.level - 1, 0);
-                //card.lastCorrect = false;  // TODO: Ensure that the user has to do each level at least twice
+                card.streak = 0;  // Ensures that the user has to do at least two questions per level
             }
-            if (learn) card.correct += 1;
-            else card.incorrect += 1;
-            card.lastCorrect = learn;
             card.lastStudied = new Date();
             db.then(db => db.transaction('cards', 'readwrite').objectStore('cards').put(card).onsuccess = ev => {
                 res(ev.target.result);
@@ -64,19 +50,25 @@ export function learn(cardId, learn) {
     })
 }
 
+export function resetLearning(deckId, level, streak) {
+
+}
+
 export function makeCard(term, definition) {
-    const transaction = db.then(db => db.transaction('cards', 'readwrite'));
-    const cardsStore = transaction.objectStore('cards');
-    // TODO: why is type checking complaining?
-    cardsStore.add({
-        deckId: -1,
-        term,
-        definition,
-        correct: 0,
-        incorrect: 0,
-        lastStudied: new Date(),
-        lastCorrect: false,
-        level: 0
+    db.then(db => {
+        const transaction = db.transaction('cards', 'readwrite');
+        const cardsStore = transaction.objectStore('cards');
+        // TODO: why is type checking complaining?
+        cardsStore.add({
+            deckId: -1,
+            term,
+            definition,
+            correct: 0,
+            incorrect: 0,
+            lastStudied: new Date(),
+            streak: 0,
+            level: 0
+        });
     });
     //transaction.oncomplete = ev => reloadSongs(albumId);
 }
@@ -86,17 +78,18 @@ export function makeCard(term, definition) {
     const request = window.indexedDB.open('quizlet', 1);
     request.onsuccess = function() {
         console.log('Database opened successfully');
-        res(request.result);
 
         /*makeCard("2+2=", 5);
         makeCard("letter after A", "B");
         makeCard("What's Obama's last name?", "Obama");
         makeCard("You go at red, but stop at green. What am I?", "Watermelon");*/
+
+        res(request.result);
     };
 
     request.onerror = function(ev) {
         rej(ev.target.error);
-        alert("Database permission is required to store songs and playlists");
+        alert("Database permission is required to flashcards");
     };
 
     request.onupgradeneeded = function(e) {

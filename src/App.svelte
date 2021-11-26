@@ -1,12 +1,9 @@
 <script>
 	import Controller from "./Controller.svelte";
-
-	export let name;
 </script>
 
 <main>
 	<Controller />
-
 </main>
 
 <style>
