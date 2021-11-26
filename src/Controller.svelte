@@ -15,29 +15,35 @@
 
     // TODO: getFrame() function?
 
-    const cards = getAllCards().then(cards => cards.filter(card => card.level !== 2)).then(shuffle);  // TODO: maybe in the future don't load all data into memory (maybe just ids?)
+    let cards = [];
+    // I initialize cards within a callback instead of using promises to ensure pointer is de-incremented after mastering a card before returning to the event loop
+    const cardsPromise = getAllCards().then(cards => cards.filter(card => card.level !== 2)).then(shuffle).then(allCards => {
+        cards = allCards;
+        console.log("LOADED", cards, allCards);
+        if (cards.length > 0) incr_pointer();  // Initialize the first answer
+    });  // TODO: maybe in the future don't load all data into memory (maybe just ids?)
+    console.log(cardsPromise);
     let pointer = -1;
-    async function incr_pointer() {
+    function incr_pointer() {
+        if (cards.length === 0) return;
         // TODO: make more concise
         const tmpPointer = pointer + 1;
-        const myCards = await cards;
-        if (tmpPointer === LEARN_FRAME || tmpPointer === myCards.length) {
+        if (tmpPointer === LEARN_FRAME || tmpPointer === cards.length) {
             pointer = 0;
-            shuffle(myCards, Math.min(LEARN_FRAME, myCards.length));
-            console.log("Shuffled", myCards.slice(0, Math.min(LEARN_FRAME, myCards.length)));
+            shuffle(cards, Math.min(LEARN_FRAME, cards.length));
+            console.log("Shuffled", cards.slice(0, Math.min(LEARN_FRAME, cards.length)));
         } else
             pointer++;
-        console.log("Pointer at index", pointer, "of", myCards.length - 1);
+        console.log("Pointer at index", pointer, "of", cards.length - 1);
         $guess = null;
-        answer = myCards[pointer].definition.toString().toLowerCase();
+        answer = cards[pointer].definition.toString().toLowerCase();
 
         // shuffle options
-        options = shuffle(myCards
-            .slice(0, Math.min(LEARN_FRAME, myCards.length))  // Get learn frame
+        options = shuffle(cards
+            .slice(0, Math.min(LEARN_FRAME, cards.length))  // Get learn frame
             .map(card => card.definition.toString().toLowerCase())
-            .slice(0, Math.min(4, myCards.length)));  // Get first 4 without overflowing
+            .slice(0, Math.min(4, cards.length)));  // Get first 4 without overflowing
     }
-    incr_pointer();  // Initialize the first answer
 
     $: if ($guess !== null) {
         const isCorrect = $guess === answer;
@@ -46,27 +52,28 @@
     }
 
     async function learnCard(isCorrect) {
-        const myCards = await cards;
-        const id = myCards[pointer].id;
+        const id = cards[pointer].id;
         await learn(id, isCorrect);
         const card = await getCard(id);
         if (card.level === 2) {
-            myCards.splice(pointer--, 1);  // TODO: will this actually modify the contents?
-            console.log(myCards);
+            cards.splice(pointer--, 1);
         }
         incr_pointer();
     }
+    // TODO: pull options from outside of learn frame if learn frame < available cards
 </script>
 
-{#await cards then cards}
+{#await cardsPromise then _}
     {#if cards.length > 0}
-        <Card definition={cards[pointer].term}>
-            {#if cards[pointer].level === 0}
-                <MultiChoice {learnCard} {answer} {options} />
-            {:else}
-                <FreeRes {learnCard} {answer} />
-            {/if}
-        </Card>
+        {#await getCard(cards[pointer].id) then card}
+            <Card definition={card.term}>
+                {#if card.level === 0}
+                    <MultiChoice {learnCard} {answer} {options} />
+                {:else}
+                    <FreeRes {learnCard} {answer} />
+                {/if}
+            </Card>
+        {/await}
     {:else}
         You finished! <button>Study Again!</button>
     {/if}
