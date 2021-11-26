@@ -1,11 +1,14 @@
 <script>
+    import { marked } from 'marked';
+
     export let definition = "definition";
 </script>
 
 <div id="container">
     <div id="card">
         <h3>Definition</h3>
-        {definition}
+        <!-- TODO: markdown is not sanitized, but that should not be an issue? -->
+        {@html marked.parse(definition)}
 
         <slot></slot>
     </div>

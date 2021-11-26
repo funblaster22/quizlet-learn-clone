@@ -55,34 +55,43 @@ export function resetLearning(deckId, level, streak) {
 }
 
 export function makeCard(term, definition) {
-    db.then(db => {
-        const transaction = db.transaction('cards', 'readwrite');
-        const cardsStore = transaction.objectStore('cards');
-        // TODO: why is type checking complaining?
-        cardsStore.add({
-            deckId: -1,
-            term,
-            definition,
-            correct: 0,
-            incorrect: 0,
-            lastStudied: new Date(),
-            streak: 0,
-            level: 0
+    return new Promise(res => {
+        db.then(db => {
+            const transaction = db.transaction('cards', 'readwrite');
+            const cardsStore = transaction.objectStore('cards');
+            // TODO: why is type checking complaining?
+            cardsStore.add({
+                deckId: -1,
+                term,
+                definition,
+                correct: 0,
+                incorrect: 0,
+                lastStudied: new Date(),
+                streak: 0,
+                level: 0
+            });
+            transaction.oncomplete = res;
         });
     });
-    //transaction.oncomplete = ev => reloadSongs(albumId);
 }
 
 // Adapted from https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Client-side_storage#storing_complex_data_%E2%80%94_indexeddb
 /** @type {Promise<IDBDatabase>} */ const db = new Promise((res, rej) => {
+    let dbShouldInit = false;
     const request = window.indexedDB.open('quizlet', 1);
     request.onsuccess = function() {
         console.log('Database opened successfully');
 
-        /*makeCard("2+2=", 5);
-        makeCard("letter after A", "B");
-        makeCard("What's Obama's last name?", "Obama");
-        makeCard("You go at red, but stop at green. What am I?", "Watermelon");*/
+        if (dbShouldInit) {
+            fetch("/names.json").then(res => res.json()).then(json => {
+                console.log(json);
+                const promises = [];
+                for (const [img, name] of Object.entries(json)) {
+                    promises.push(makeCard(`![student](${img})`, name));
+                }
+                Promise.all(promises).then(location.reload);  // TODO: temp
+            });
+        }
 
         res(request.result);
     };
@@ -95,6 +104,7 @@ export function makeCard(term, definition) {
     request.onupgradeneeded = function(e) {
         // Grab a reference to the opened database
         const db = e.target.result;
+        dbShouldInit = true;
 
         // Create an objectStore to store our notes in (basically like a single table)
         // including a auto-incrementing key
