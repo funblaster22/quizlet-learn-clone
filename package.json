@@ -1,5 +1,5 @@
 {
-  "name": "svelte-app",
+  "name": "quizlet-learn-clone",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -20,5 +20,12 @@
   "dependencies": {
     "marked": "^4.0.5",
     "sirv-cli": "^1.0.0"
+  },
+  "engines": {
+    "node": "16.x",
+    "pnpm": "6.x"
+  },
+  "glitch": {
+    "projectType": "generated_static"
   }
 }
