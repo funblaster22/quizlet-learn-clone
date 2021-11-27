@@ -9,7 +9,7 @@
     <div id="card">
         <h3>Definition</h3>
         <!-- TODO: markdown is not sanitized, but that should not be an issue? -->
-        {@html marked.parse(definition)}
+        {@html decodeURIComponent(marked.parse(definition))}
 
         <slot></slot>
     </div>
