@@ -1,14 +1,27 @@
+:root {
+	--color-button: #3CCFCF;
+	--incorrect-bg: rgba(255, 35, 0, 0.1);
+	--incorrect-outline: #FF9C8C;
+	--correct-bg: rgba(35, 178, 109, 0.1);
+	--correct-outline: #23b26d;
+}
+
+* {
+	box-sizing: border-box;
+}
+
 html, body {
 	position: relative;
 	width: 100%;
 	height: 100%;
+	background-color: #f6f7fb;
+	overflow: hidden;
 }
 
 body {
 	color: #333;
 	margin: 0;
-	padding: 8px;
-	box-sizing: border-box;
+	padding: 0;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
@@ -32,7 +45,6 @@ label {
 input, button, select, textarea {
 	font-family: inherit;
 	font-size: inherit;
-	-webkit-padding: 0.4em 0;
 	padding: 0.4em;
 	margin: 0 0 0.5em 0;
 	box-sizing: border-box;
@@ -48,6 +60,8 @@ button {
 	color: #333;
 	background-color: #f4f4f4;
 	outline: none;
+	border-radius: 8px;
+	cursor: pointer;
 }
 
 button:disabled {

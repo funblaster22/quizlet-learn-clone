@@ -10,20 +10,14 @@
 	main {
 		text-align: center;
 		padding: 1em;
-		max-width: 240px;
+		max-width: 848px;
 		margin: 0 auto;
-	}
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
+		/* Perfect centering */
+		display: flex;
+		justify-content: center;
+		height: 100vh;
+		box-sizing: border-box;
+		align-items: center;
 	}
 </style>

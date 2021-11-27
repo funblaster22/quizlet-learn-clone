@@ -11,8 +11,8 @@
 {#if $guess === null}
     <form on:submit|preventDefault={ev => $guess = new FormData(ev.target).get("answer").toLowerCase()}>
         <input placeholder="Type the Answer" autocomplete="off" autocapitalize="off" name="answer" autofocus />
-        <button>Don't know?</button>
-        <button>Submit</button>
+        <button class="secondary">Don't know?</button>
+        <button id="submit">Submit</button>
     </form>
 {:else}
     {#if $guess === answer}
@@ -22,6 +22,32 @@
         You guessed: {$guess}<br />
         Answer: {answer}<br />
         <input placeholder="Copy the correct answer:" on:input={ev => { if (ev.target.value.toLowerCase() === answer) learnCard(false) }} autofocus />
-        <button on:click={learnCard.bind(this, true)}>Override: I was correct</button>
+        <button class="secondary" on:click={learnCard.bind(this, true)}>Override: I was correct</button>
     {/if}
 {/if}
+
+<style>
+    input {
+        background: #f4f4f4;
+        border: .125rem solid transparent;
+    }
+
+    input:focus {
+        outline: none;
+        border-bottom-color: var(--color-button);
+    }
+
+    .secondary {
+        background: none;
+        border: 0;
+        color: var(--color-button);
+        font-weight: bold;
+    }
+
+    #submit {
+        background: var(--color-button);
+        border: 0;
+        color: white;
+        font-weight: bold;
+    }
+</style>

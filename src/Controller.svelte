@@ -19,7 +19,7 @@
     // I initialize cards within a callback instead of using promises to ensure pointer is de-incremented after mastering a card before returning to the event loop
     const cardsPromise = getAllCards().then(cards => cards.filter(card => card.level !== 2)).then(shuffle).then(allCards => {
         cards = allCards;
-        console.log("LOADED", cards, allCards);
+        console.log("LOADED", cards);
         if (cards.length > 0) incr_pointer();  // Initialize the first answer
     });  // TODO: maybe in the future don't load all data into memory (maybe just ids?)
     console.log(cardsPromise);
