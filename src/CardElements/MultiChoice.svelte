@@ -24,13 +24,14 @@
     window.onkeypress = keyboardGuess;
 </script>
 
-<h3>
-    {#if $guess !== null && $guess !== answer}
-        <span style="color: var(--incorrect-outline)">No sweat, you're still learning!</span>
-    {:else}
-        Choose matching term  <!-- TODO: could be term or definition -->
-    {/if}
-</h3>
+{#if $guess !== null && $guess !== answer}
+    <div style="margin: 0 0 1em 0">
+        <h3 style="color: var(--incorrect-outline); margin: 0">No sweat, you're still learning!</h3>
+        Press any key to <button on:click={continue_}>continue</button>...
+    </div>
+{:else}
+    <h3>Choose matching term</h3>  <!-- TODO: could be term or definition -->
+{/if}
 <div id="options">
     <!-- Note to self: using shuffle(options) leads to inconsistent behavior as the correct answer will not be marked as correct (visually) -->
     {#each options as option, index}
@@ -39,9 +40,6 @@
         </button>
     {/each}
 </div>
-{#if $guess !== null && $guess !== answer}
-    <div>Press any key to <button on:click={continue_}>continue</button>...</div>
-{/if}
 
 <style>
     .circle {
@@ -65,11 +63,17 @@
         border-color: dimgrey;
     }
 
+    @media only screen and (max-width: 600px) {
+        .option {
+            width: 100%;
+        }
+    }
+
     #options {
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        gap: 24px;
+        gap: 15px;
     }
 
     [disabled] {

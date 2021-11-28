@@ -22,7 +22,6 @@
         console.log("LOADED", cards);
         if (cards.length > 0) incr_pointer();  // Initialize the first answer
     });  // TODO: maybe in the future don't load all data into memory (maybe just ids?)
-    console.log(cardsPromise);
     let pointer = -1;
     function incr_pointer() {
         if (cards.length === 0) return;

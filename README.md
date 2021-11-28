@@ -3,9 +3,8 @@
 ## Setup
 On glitch.com, upload the names.json file to "public," then run:
 ```
-npm run build
 node extractFolder.js <URL> <dest>
-
+npm run build
 refresh
 ```
-This is necessary because it downloads into memory, to bypass the storage constraints.
+This is necessary because it downloads the zip into memory, bypassing the storage constraints.

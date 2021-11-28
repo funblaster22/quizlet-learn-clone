@@ -11,7 +11,7 @@
 <style>
 	main {
 		text-align: center;
-		padding: 1em;
+		padding: 0.5em;
 		max-width: 848px;
 		margin: 0 auto;
 
@@ -19,7 +19,6 @@
 		display: flex;
 		justify-content: center;
 		height: 100vh;
-		box-sizing: border-box;
 		align-items: center;
 	}
 </style>

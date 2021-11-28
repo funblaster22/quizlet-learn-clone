@@ -89,6 +89,7 @@ export default [
 		plugins: [
 			injectManifest({
 				globDirectory: 'public',
+				globPatterns: ['**/*.css', '**/*.js', '**/*.html', '*.png'],
 				globIgnores: ['sw.js']
 			}),
 

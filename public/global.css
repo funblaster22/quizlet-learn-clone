@@ -16,6 +16,7 @@ html, body {
 	height: 100%;
 	background-color: #f6f7fb;
 	overflow: hidden;
+	/* TODO: if I cared about iOS, I would fix the bug where the content is cut off at the bottom */
 }
 
 body {
@@ -46,8 +47,6 @@ input, button, select, textarea {
 	font-family: inherit;
 	font-size: inherit;
 	padding: 0.4em;
-	margin: 0 0 0.5em 0;
-	box-sizing: border-box;
 	border: 1px solid #ccc;
 	border-radius: 2px;
 }
@@ -74,4 +73,8 @@ button:not(:disabled):active {
 
 button:focus {
 	border-color: #666;
+}
+
+h3 {
+	margin: 0 0 1em 0;
 }
