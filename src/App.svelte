@@ -1,10 +1,12 @@
 <script>
 	import Controller from "./Controller.svelte";
+	import SaveOffline from "./SaveOffline.svelte";
 </script>
 
 <main>
 	<Controller />
 </main>
+<SaveOffline />
 
 <style>
 	main {
