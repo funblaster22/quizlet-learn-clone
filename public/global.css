@@ -78,3 +78,19 @@ button:focus {
 h3 {
 	margin: 0 0 1em 0;
 }
+
+/* width */
+::-webkit-scrollbar {
+	width: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #ccc;
+	border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #8d8d8d;
+}

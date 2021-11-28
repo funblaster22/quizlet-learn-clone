@@ -7,6 +7,7 @@
     import {shuffle, LEARN_FRAME} from "./util";
     import {setContext} from "svelte";
     import {writable} from "svelte/store";
+    import Accuracy from "./Accuracy.svelte";
 
     let options = [];
     let answer;
@@ -69,6 +70,7 @@
     {#if cards.length > 0}
         {#await getCard(cards[pointer].id) then card}
             <Card definition={card.term}>
+                <Accuracy value={card.correct / (card.incorrect + card.correct) * 100} />
                 {#if card.level === 0}
                     <MultiChoice {learnCard} {answer} {options} />
                 {:else}

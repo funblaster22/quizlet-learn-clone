@@ -15,6 +15,7 @@
 
 <style>
     #card {
+        position: relative;
         overflow: auto;
         max-height: calc(100vh - 1em);
         background-color: white;
