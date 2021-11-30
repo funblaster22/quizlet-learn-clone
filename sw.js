@@ -3093,7 +3093,7 @@
 
     // Adapted from https://glitch.com/edit/#!/workbox-strategies
 
-    precacheAndRoute([{"revision":"5564c508657b96170d30595407bbbf11","url":"build/bundle.css"},{"revision":"cd64377c860861f0ba576c9273e7b9ea","url":"global.css"},{"revision":"0e68e7ce50e4ed65981b64eca225a746","url":"build/bundle.js"},{"revision":"6b521275837098d8c482001e7379ab21","url":"index.html"},{"revision":"1cd0e7c996d0779d991052b7a6fca3c8","url":"favicon.png"}]);
+    precacheAndRoute([{"revision":"2287c94041b687db7965dd9cc5b73086","url":"build/bundle.css"},{"revision":"cd64377c860861f0ba576c9273e7b9ea","url":"global.css"},{"revision":"3d463dd24dd162ddfc5f8c7b3b647ff9","url":"build/bundle.js"},{"revision":"992ec674f49a11e1552110ed562f5d74","url":"index.html"},{"revision":"1cd0e7c996d0779d991052b7a6fca3c8","url":"favicon.png"}]);
 
     addEventListener('message', async event => {
         // event is an ExtendableMessageEvent object
