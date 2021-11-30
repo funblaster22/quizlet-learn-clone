@@ -83,7 +83,7 @@ export function makeCard(term, definition) {
         console.log('Database opened successfully');
 
         if (dbShouldInit) {
-            fetch("/names.json").then(res => res.json()).then(json => {
+            fetch("names.json").then(res => res.json()).then(json => {
                 console.log(json);
                 const promises = [];
                 for (const [img, name] of Object.entries(json)) {

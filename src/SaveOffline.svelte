@@ -7,7 +7,7 @@
 
     const registration = new Promise((res, rej) => {
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js').then(function(registration) {
+            navigator.serviceWorker.register('sw.js').then(function(registration) {
                 // Registration was successful
                 console.log('ServiceWorker registration successful with scope: ', registration.scope);
                 registration.onupdatefound
@@ -21,7 +21,6 @@
                 }
             }, function(err) {
                 // registration failed :(
-                console.error('ServiceWorker registration failed: ', err);
                 rej(err);
             });
 
