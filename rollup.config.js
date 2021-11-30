@@ -31,6 +31,23 @@ function serve() {
 	};
 }
 
+const sharedPlugins = [
+	replace({
+		'process.env.NODE_ENV': process.env.NODE_ENV
+	}),
+
+	// If you have external dependencies installed from
+	// npm, you'll most likely need these plugins. In
+	// some cases you'll need additional configuration -
+	// consult the documentation for details:
+	// https://github.com/rollup/plugins/tree/master/packages/commonjs
+	resolve({
+		browser: true,
+		dedupe: ['svelte']
+	}),
+	commonjs(),
+]
+
 export default [
 	{
 		input: 'src/main.js',
@@ -51,16 +68,7 @@ export default [
 			// a separate file - better for performance
 			css({ output: 'bundle.css' }),
 
-			// If you have external dependencies installed from
-			// npm, you'll most likely need these plugins. In
-			// some cases you'll need additional configuration -
-			// consult the documentation for details:
-			// https://github.com/rollup/plugins/tree/master/packages/commonjs
-			resolve({
-				browser: true,
-				dedupe: ['svelte']
-			}),
-			commonjs(),
+			...sharedPlugins,
 
 			// In dev mode, call `npm run start` once
 			// the bundle has been generated
@@ -92,15 +100,7 @@ export default [
 				globPatterns: ['**/*.css', '**/*.js', '**/*.html', '*.png'],
 				globIgnores: ['sw.js']
 			}),
-
-			replace({
-				'process.env.NODE_ENV': process.env.NODE_ENV
-			}),
-			// TODO: consolidate
-			resolve({
-				browser: true
-			}),
-			commonjs(),
+			...sharedPlugins,
 			watch({ dir: "src" })  // ensures sw rebuilds if project changes
 		]
 	}

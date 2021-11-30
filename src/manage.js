@@ -89,7 +89,7 @@ export function makeCard(term, definition) {
                 for (const [img, name] of Object.entries(json)) {
                     promises.push(makeCard(`![student](${img})`, name));
                 }
-                Promise.all(promises).then(location.reload);  // TODO: temp
+                Promise.all(promises).then(() => location.reload());  // TODO: temp
             });
         }
 
